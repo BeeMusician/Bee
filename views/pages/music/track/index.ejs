@@ -1,0 +1,387 @@
+<%
+  const safeCoverArt = (typeof release !== 'undefined' && release.cover_art) ? release.cover_art : '';
+  const safeReleaseName = (typeof release !== 'undefined' && release.name) ? release.name : (typeof releaseParent !== 'undefined' ? releaseParent : 'Unknown Release');
+%>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://beesyrupmusic.com/release/<%= release.slug %>">
+    <title><%= track.name %> by <%= release.artist %> | Official Track Page</title>
+    <meta name="description" content="Listen/Stream <%= release.name %> (<%= release.type %>) by <%= release.artist %>. <%= release.tracks.length %><%= release.tracks.length === 1 ? 'track' : 'tracks' %>: <%= release.tracks.map(t => t.title).join(' · ') %>.">
+    <link rel="apple-touch-icon" href="https://beesyrupmusic.com/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" type="image/svg+xml" href="https://beesyrupmusic.com/favicon.svg" sizes="any">
+    <link rel="icon" type="image/png" href="https://beesyrupmusic.com/favicon.png" sizes="512x512">
+    <link rel="icon" type="image/x-icon" href="https://beesyrupmusic.com/favicon.ico" sizes="any">
+    <link rel="manifest" href="https://beesyrupmusic.com/site.webmanifest">
+    <link rel="stylesheet" href="https://beesyrupmusic.com/style.css">
+    <meta name="theme-color" content="var(--accent)">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="<%= release.artist %>">
+
+    <meta property="og:site_name" content="<%= release.artist %>">
+    <meta property="og:type" content="music.song">
+    <meta property="og:title" content="<%= track.name %> by <%= release.artist %> | Official Track Page">
+    <meta property="og:description" content="Listen/Stream <%= release.name %> (<%= release.type %>) by <%= release.artist %>. <%= release.tracks.length %><%= release.tracks.length === 1 ? 'track' : 'tracks' %>: <%= release.tracks.map(t => t.title).join(' · ') %>.">
+    <meta property="og:url" content="https://beesyrupmusic.com">
+    <meta property="og:image" content="<%= release.cover_art %>">
+    <meta property="og:image:alt" content="<%= track.name %> Cover Art">
+
+    <meta name="twitter:title" content="<%= track.name %> by <%= release.artist %> | Official Track Page">
+    <meta name="twitter:description" content="Listen/Stream <%= release.name %> (<%= release.type %>) by <%= release.artist %>. <%= release.tracks.length %><%= release.tracks.length === 1 ? 'track' : 'tracks' %>: <%= release.tracks.map(t => t.title).join(' · ') %>.">
+    <meta name="twitter:url" content="https://beesyrupmusic.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="<%= release.cover_art %>">
+    <script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        console.log('Service Worker registered successfully with scope:', registration.scope);
+      })
+      .catch((error) => {
+        console.error('Service Worker registration failed:', error);
+      });
+  });
+}
+    </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "MusicRecording",
+      "@id": "https://beesyrupmusic.com/track/<%= track.slug %>",
+      "url": "https://beesyrupmusic.com/track/<%= track.slug %>",
+      "mainEntityOfPage": "https://beesyrupmusic.com/track/<%= track.slug %>",
+      "name": "<%= track.name %>",
+      "inLanguage": "en",
+      "description": "Stream '<%= track.name %>' by <%= release.artist %>. Released <%= release.date %>.",
+      "byArtist": {
+        "@type": "MusicGroup",
+        "name": "<%= release.artist %>"
+      },
+      "creditedTo": {
+        "@type": "MusicGroup",
+        "name": "<%= release.artist %>"
+      },
+      "producer": {
+        "@type": "Person",
+        "name": "<%= release.artist %>"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "<%= release.artist %>"
+      },
+      "inAlbum": {
+        "@type": "MusicAlbum",
+        "name": "<%= release.name %>",
+        "url": "https://beesyrupmusic.com/release/<%= release.slug %>"
+      },
+      "duration": "<%= track.durationISO || track.duration %>",
+      "isrcCode": "<%= track.isrc || '' %>",
+      "datePublished": "<%= release.release_date %>",
+      "copyrightYear": "<%= release.release_date.split('-')[0] %>",
+      "genre": "<%= release.genre %>",
+      "isAccessibleForFree": true,
+      "keywords": ["Music Recording", "Track", "<%= release.artist %>", "<%= track.name %>"],
+      "image": [
+        "<%= release.cover_art %>"
+      ],
+      "sameAs": [
+        "https://beesyrupmusic.com/track/<%= track.slug %>"
+        <% if (track.id_spotify) { %>, "https://open.spotify.com/track/<%= track.id_spotify %>"<% } %>
+        <% if (track.id_applemusic) { %>, "https://music.apple.com/song/<%= track.id_applemusic %>"<% } %>
+        <% if (track.id_youtube) { %>, "https://music.youtube.com/watch?v=<%= track.id_youtube %>"<% } %>
+        <% if (track.id_soundcloud) { %>, "https://soundcloud.com/beesyrupmusic/<%= track.slug %>"<% } %>
+        <% if (track.id_musicbrainz) { %>, "https://musicbrainz.org/recording/<%= track.id_musicbrainz %>"<% } %>
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://beesyrupmusic.com/track/<%= track.slug %>#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "BeeSyrup",
+          "item": "https://beesyrupmusic.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "track",
+          "item": "https://beesyrupmusic.com/track"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "<%= track.name %>",
+          "item": "https://beesyrupmusic.com/track/<%= track.slug %>"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <style>
+      @media (max-width: 845px) {
+        hr {
+          display: none;
+        }
+        header {
+          background-color: var(--black);
+          flex-wrap: wrap;
+          padding: 10px;
+        }
+        header a {
+          display: none;
+        }
+        header h1 {
+          font-size: 1.2rem;
+        }
+        .EmbedFrame {
+          margin: 0;
+          width: 100%;
+        }
+      }
+
+      /* Appears On Section Container */
+.appears-on-container {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.release-count {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Responsive Grid Layout */
+.appears-on-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Release Cards */
+.release-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 0.85rem;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+}
+
+.release-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(245, 158, 11, 0.3); /* Accent Glow */
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Cover Art Styling */
+.card-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #12141c;
+  margin-bottom: 0.85rem;
+}
+
+.card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.release-card:hover .card-cover img {
+  transform: scale(1.05);
+}
+
+/* Fallback Art Icon */
+.cover-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #4b5563;
+}
+
+/* Play Button Hover Overlay */
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.release-card:hover .play-overlay {
+  opacity: 1;
+}
+
+/* Typography & Badges */
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.release-tag {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Badge Color Themes */
+.release-tag.single {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.release-tag.ep {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.release-tag.album {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+}
+
+.release-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f3f4f6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.release-card:hover .release-title {
+  color: #f59e0b;
+}
+    </style>
+  </head>
+  <body style="background-color: #242424; padding: 20px; color: var(--text);">
+    
+    <header style="display: flex; align-items: center; gap: 10px;">
+      <svg id="mainlogo" width="115px" height="115px">
+        <image href="/brand/beesyrup-logo.png" height="115px" width="115px"></image>
+      </svg>
+      <h1 style="font-family: BeeSyrup; font-size: 2.5em; margin: 0;">Bee</h1>
+      <div class="Tab" style="float:left">Syrup</div>
+    </header>
+
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <ol style="list-style: none; display: flex; gap: 8px; padding: 0;">
+        <li><a href="https://beesyrupmusic.com" style="color: #666; text-decoration: none;">beesyrupmusic.com</a></li>
+        <li style="color: #666;">&rsaquo;</li>
+        <li><a href="https://beesyrupmusic.com/track" style="color: #666; text-decoration: none;">track</a></li>
+        <li style="color: #666;">&rsaquo;</li>
+        <li><a style="color: var(--gold); text-decoration: none;"><%= track.slug %></a></li>
+      </ol>
+    </nav>
+
+    <section class="Hero" style="text-align: center; margin-top: 40px; display: block;">
+      <h1 style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif, sans-serif; font-size: 4rem; margin-bottom: 10px;"><%= track.name %></h1>
+      <h2 style="color: var(--gold); letter-spacing: 4px;"><%= track.artist %></h2>
+      <p style="color: var(--muted);">⏱ Duration: <%= track.duration.replace('PT', '').replace('M', ':').replace('S', '') %> | 🪪 ISRC: <%= track.isrc %></p>
+    </section>
+
+    <main style="display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 30px;">
+      
+      <% if (track.id_spotify) { %>
+        <div class="EmbedFrame" style="max-width: 500px; width: 100%;">
+          <iframe 
+            src="https://open.spotify.com/embed/track/<%= track.id_spotify %>" 
+            height="152" 
+            style="width: 100%; border: none; border-radius: 12px;"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy">
+          </iframe>
+        </div>
+      <% } %>
+
+      <% if (track.appearsOn && track.appearsOn.length > 0) { %>
+  <section class="appears-on-container">
+    <div class="section-header">
+      <h2 class="section-title">Appears On</h2>
+      <span class="release-count"><%= track.appearsOn.length %> <%= track.appearsOn.length === 1 ? 'Release' : 'Releases' %></span>
+    </div>
+
+    <div class="appears-on-grid">
+      <% track.appearsOn.forEach(release => { %>
+        <a href="/release/<%= release.slug %>" class="release-card">
+          <div class="card-cover">
+            <% if (release.coverArt) { %>
+              <img src="<%= release.coverArt %>" alt="<%= release.name %> cover art" loading="lazy">
+            <% } else { %>
+              <!-- Default Fallback Cover if no image URL is provided -->
+              <div class="cover-placeholder">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </div>
+            <% } %>
+            <div class="play-overlay">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </div>
+          </div>
+
+          <div class="card-info">
+            <span class="release-tag <%= release.type ? release.type.toLowerCase() : 'single' %>">
+              <%= release.type || 'Single' %>
+            </span>
+            <h3 class="release-title"><%= release.name %></h3>
+          </div>
+        </a>
+      <% }); %>
+    </div>
+  </section>
+<% } %>
+    </main>
+
+  </body>
+</html>

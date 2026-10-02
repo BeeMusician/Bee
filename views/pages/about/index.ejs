@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://beesyrupmusic.com/about">
+  <title>About BeeSyrup | Official Biography, Background & More</title>
+  <meta name="description" content="Read the official biography of BeeSyrup. Discover the background, musical journey, and creative process behind the electronic music project.">
+  <link rel="apple-touch-icon" href="https://beesyrupmusic.com/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" type="image/svg+xml" href="https://beesyrupmusic.com/favicon.svg">
+  <link rel="icon" type="image/png" href="https://beesyrupmusic.com/favicon.png" sizes="512x512">
+  <link rel="icon" type="image/x-icon" href="https://beesyrupmusic.com/favicon.ico">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/style.css">
+  <meta name="theme-color" content="#FAFF00">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="BeeSyrup">
+
+  <meta property="og:site_name" content="BeeSyrup">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="About BeeSyrup | Official Biography, Background & More">
+  <meta property="og:description" content="Read the official biography of BeeSyrup. Discover the background, musical journey, and creative process behind the electronic music project.">
+  <meta property="og:url" content="https://beesyrupmusic.com/about">
+  <meta property="og:image" content="https://beesyrupmusic.com/images/preview.jpg">
+  <meta property="og:image:alt" content="BeeSyrup Logo">
+
+  <meta name="twitter:title" content="About BeeSyrup | Official Biography, Background & More">
+  <meta name="twitter:description" content="Read the official biography of BeeSyrup. Discover the background, musical journey, and creative process behind the electronic music project.">
+  <meta name="twitter:url" content="https://beesyrupmusic.com/about">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://beesyrupmusic.com/images/preview.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => { console.log('Service Worker active:', registration.scope); })
+          .catch((error) => { console.error('Service Worker registration failed:', error); });
+      });
+    }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About BeeSyrup",
+    "url": "https://beesyrupmusic.com/about",
+    "mainEntity": {
+      "@type": "MusicGroup",
+      "name": "BeeSyrup",
+      "url": "https://beesyrupmusic.com",
+      "genre": "Electronic",
+      "sameAs": [
+        "https://www.pandora.com/artist/beesyrup",
+        "https://audio.com/beesyrup"
+      ]
+    }
+  }
+  </script>
+</head>
+<body>
+  <header class="website-header">
+    <%- include(header, { tracks: release.tracks, release: release }) %>
+  </header>
+
+  <!-- Main Bio Content -->
+  <main>
+    <article class="bio-card">
+      <h2>Biography</h2>
+      <p>
+        <strong>BeeSyrup</strong> is an electronic music project specializing in dynamic melodies, atmospheric synthesis, and rhythm-driven soundscapes.
+      </p>
+      <p>
+        From standalone singles like <em>Fallen Friends</em> to cohesive projects like the <em>Tails Trilogy EP</em>, BeeSyrup continues to explore new musical directions across major digital streaming platforms.
+      </p>
+    </article>
+
+    <!-- Official External Platform Links -->
+    <section class="streaming-links">
+      <h3>Stream BeeSyrup On</h3>
+      <div class="platform-grid">
+        <a href="https://www.pandora.com/artist/beesyrup" target="_blank" rel="noopener" class="platform-card">
+          Pandora
+        </a>
+        <a href="https://audio.com/beesyrup" target="_blank" rel="noopener" class="platform-card">
+          Audio.com
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <% if (release && release.tracks && release.tracks.length > 0) { %>
+    <%- include(tracklist, { tracks: release.tracks, release: release }) %>
+  <% } else { %>
+    <div class="CardPrimary" style="width: 100%; padding: 20px;">
+      <p style="color: #666; margin: 0; text-align: center;">No tracks available for this release.</p>
+    </div>
+  <% } %>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 BeeSyrup. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

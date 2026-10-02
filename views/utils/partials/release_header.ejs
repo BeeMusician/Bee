@@ -1,0 +1,40 @@
+<div class="header-wrapper">
+    <div class="header-left">
+        <a href="/" class="brand-link">
+            <img src="/media/assets/brand/beesyrup-logo-1-dark.png" width="48" height="71" alt="BeeSyrup Logo" class="logo">
+            <h1 class="brand-name"><%= release.artist %></h1>
+        </a>
+    </div>
+    <div class="header-center">
+        <div class="release-wrapper" style="border-radius: 999px;">
+            <div class="release-link-container" style="background-color: transparent">
+                <div class="release-item" style="color: var(--branding-accent-secondary-HEX)">
+                    <div class="release-badge-icon">
+                        <img src="<%= release.cover_art %>" alt="<%= release.name %> Cover Art" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="release-badge-text">
+                        <span style="font-size: 11px; display: block; line-height: 1; margin-bottom: 3px; text-transform: uppercase"><%= release.date %></span>
+                        <span class="subtitle-row" style="display: flex; align-items: center; gap: 6px;">
+                            <div class="header-pulse-dot" style="width: 8px; height: 8px;"></div>
+                            <span>CURRENTLY VIEWING RELEASE</span>
+                        </span>
+                        <span style="font-size: 20px; font-weight: 800; display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;"><%= release.title %></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-right">
+        <nav class="navigation-links">
+            <a href="/releases">
+                <span>Music</span>
+            </a>
+            <a href="/epk">
+                <span>EPK</span>
+            </a>
+            <a href="/about">
+                <span>About</span>
+            </a>
+        </nav>
+    </div>
+</div>

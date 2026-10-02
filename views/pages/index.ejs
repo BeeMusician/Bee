@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://beesyrupmusic.com">
+    <title>BeeSyrup UK | Official Website | Music, Software, Apps & Games</title>
+    <meta name="description" content="The official hub for BeeSyrup. Stream latest releases, watch official music videos, explore software & apps, and connect across all platforms.">
+    <link rel="apple-touch-icon" href="https://beesyrupmusic.com/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" type="image/svg+xml" href="https://beesyrupmusic.com/favicon.svg">
+    <link rel="icon" type="image/png" href="https://beesyrupmusic.com/favicon.png" sizes="512x512">
+    <link rel="icon" type="image/x-icon" href="https://beesyrupmusic.com/favicon.ico">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="/style.css">
+    <meta name="theme-color" content="#FAFF00">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="BeeSyrup">
+
+    <meta property="og:site_name" content="BeeSyrup">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BeeSyrup UK | Official Website | Music, Software, Apps & Games">
+    <meta property="og:description" content="The official hub for BeeSyrup. Stream latest releases, watch official music videos, explore software & apps, and connect across all platforms.">
+    <meta property="og:url" content="https://beesyrupmusic.com">
+    <meta property="og:image" content="https://beesyrupmusic.com/images/preview.jpg">
+    <meta property="og:image:alt" content="BeeSyrup Logo">
+
+    <meta name="twitter:title" content="BeeSyrup UK | Official Website | Music, Software, Apps & Games">
+    <meta name="twitter:description" content="The official hub for BeeSyrup. Stream latest releases, watch official music videos, explore software & apps, and connect across all platforms.">
+    <meta name="twitter:url" content="https://beesyrupmusic.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://beesyrupmusic.com/images/preview.jpg">
+    <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered successfully with scope:', registration.scope);
+          })
+          .catch((error) => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+    </script>
+  </head>
+  <body>
+    <header class="website-header">
+      <%- include(header, { tracks: release.tracks, release: release }) %>
+    </header>
+    <main class="main-content">
+      <section class="hero-section">
+        <div class="hero-container">
+          <div class="hero-content">
+            <span class="hero-tag">AUDIO STREAMING PLATFORM</span>
+            <h1 style="font-family: 'Plus Jakarta Sans'"><%= release.artist %></h1>
+            <p class="hero-subtext">Discover latest releases, exclusive tracks, and seamless audio streaming built for creators.</p>
+            <div class="hero-actions">
+              <a href="/releases" class="btn-primary" style="font-family: 'Plus Jakarta Sans'">Explore Releases</a>
+              <a href="#releases" class="btn-secondary">Learn More</a>
+            </div>
+          </div>
+          <div class="hero-spotlight-card">
+            <div class="spotlight-header">
+              <span class="spotlight-icon">💡</span>
+              <div>
+                <h3>Track Spotlight</h3>
+                <p>Stream directly in high-fidelity audio with zero ads.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="discography-section" id="releases">
+        <div class="discography-container">
+          <div class="section-header">
+            <span class="section-tag">DISCOGRAPHY</span>
+            <h2 style="font-family: 'Plus Jakarta Sans'">Latest Releases</h2>
+            <p>Stream or download the latest tracks and albums by <%= release.artist %>.</p>
+          </div>          
+          <div class="release-grid">
+            <% releases.forEach(release => { %>
+              <div class="release-card">
+                <div class="release-image-wrap">
+                  <img src="<%= release.cover_art %>" alt="<%= release.name %> Cover" />
+                  <span class="release-badge-pill"><%= release.type || 'Single' %></span>
+                </div>
+                <div class="release-info">
+                  <span class="release-date"><%= release.date %></span>
+                  <h3><%= release.name %></h3>
+                  <div class="release-links">
+                    <a href="/release/<%= release.slug %>" class="btn-primary" style="background-color: var(--branding-accent-primary-HEX); color: var(--branding-accent-secondary-HEX); border: none">View Release</a>
+                    <% if (release.spotify_id) { %>
+                      <a href="https://open.spotify.com/album/<%= release.spotify_id %>" target="_blank" class="platform-link spotify">Spotify</a>
+                    <% } %>
+                    <% if (release.appleUrl) { %>
+                      <a href="<%= release.appleUrl %>" target="_blank" class="platform-link applemusic">Apple Music</a>
+                    <% } %>
+                    <% if (release.bandcampUrl) { %>
+                      <a href="<%= release.bandcampUrl %>" target="_blank" class="platform-link bandcamp">Bandcamp</a>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

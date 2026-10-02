@@ -1,0 +1,26 @@
+{
+  "short_name": "Bee",
+  "name": "BeeSyrup",
+  "description": "The official hub for BeeSyrup. Stream latest releases, watch official music videos, explore software & apps, and connect across all platforms.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#000435",
+  "theme_color": "#FAFF00",
+  "categories": ["music", "entertainment"]
+}
