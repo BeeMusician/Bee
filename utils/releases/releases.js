@@ -90,7 +90,6 @@ const buildSameAsArray = (item = {}) => {
 
 const populateTracks = (r) => {
   if (!r) {
-    console.log("Received null or undefined release object.");
     return r;
   }
   const rawTracks = r.tracks || r.track_list || [];
@@ -129,32 +128,22 @@ const populateTracks = (r) => {
 
 const fetchReleasesList = async (db) => {
   if (!db) {
-    console.log("🔥 [fetchReleasesList] Error: db instance is missing/null.");
     return [];
   }
   try {
     const snapshot = await db.ref("/music/releases").once("value");
     const releasesData = snapshot.val() || {};
-    
-    console.log("🔥 [fetchReleasesList] Raw Firebase Data Categories:", Object.keys(releasesData));
-    
     const releasesList = [];
-
     for (const categoryKey in releasesData) {
       const categoryNode = releasesData[categoryKey];
       if (categoryNode && typeof categoryNode === "object") {
-        console.log(`📁 [fetchReleasesList] Checking category '${categoryKey}', items:`, Object.keys(categoryNode));
-        
         for (const [releaseKey, releaseVal] of Object.entries(categoryNode)) {
           if (releaseVal && typeof releaseVal === "object") {
             const hasValidIndicators = releaseVal.name || releaseVal.title || releaseVal.tracks || releaseVal.release_date;
-            
             if (!hasValidIndicators) {
-              console.log(`⏭️ [fetchReleasesList] Skipping non-release node '${releaseKey}' inside '${categoryKey}'`);
               continue;
             }
-
-            const artist = releaseVal.artist || "BeeSyrup";
+            const artist = "Bee";
             const title = releaseVal.name || releaseVal.title || "Unknown Release";
             const slug = releaseVal.slug || releaseKey.trim().toLowerCase();
             const rawGenres = releaseVal.genres || [];
@@ -187,15 +176,12 @@ const fetchReleasesList = async (db) => {
               index: 0,
               sameAs
             };
-
             const populated = populateTracks(baseRelease);
             releasesList.push(populated);
-            console.log(`🎵 [fetchReleasesList] Successfully parsed release: slug='${slug}', title='${title}'`);
           }
         }
       }
     }
-    console.log(`✅ [fetchReleasesList] Total parsed releases: ${releasesList.length}`);
     return releasesList;
   } catch (err) {
     console.error("❌ [fetchReleasesList] Error fetching releases from Firebase:", err);
@@ -205,19 +191,11 @@ const fetchReleasesList = async (db) => {
 
 const buildRelease = async (db, targetSlug) => {
   const slug = targetSlug?.trim().toLowerCase();
-  console.log(`🔍 [buildRelease] Searching for target slug: '${slug}'`);
-  
   const releasesList = await fetchReleasesList(db);
-  console.log("📋 [buildRelease] Available slugs in list:", releasesList.map(r => r.slug));
-
   const foundRelease = releasesList.find((r) => r.slug && r.slug.trim().toLowerCase() === slug);
-  
   if (!foundRelease) {
-    console.log(`⚠️ [buildRelease] No matching release found for slug: '${slug}'`);
     return { release: null, releasesList };
   }
-
-  console.log(`🎉 [buildRelease] Found release matching '${slug}':`, foundRelease.title);
   return { release: populateTracks(foundRelease), releasesList };
 };
 

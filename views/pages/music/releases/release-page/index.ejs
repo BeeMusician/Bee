@@ -7,10 +7,10 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= release.title %> by <%= release.artist %> (<%= release.type %>) on Beely</title>
+  <title><%= release.title %> by <%= release.artist %> (<%= release.type %>)</title>
 </head>
-<body style="background-color: var(--branding-accent-secondary-HEX); color: var(--branding-accent-primary-HEX); font-family: 'Plus Jakarta Sans', sans-serif">
-  <header class="beely-header">
+<body>
+  <header>
     <%- include(header, { tracks: release.tracks, release: release }) %>
   </header>
   <main id="release">
