@@ -12,28 +12,44 @@ let serviceAccount;
 if (process.env.FIREBASE_SERVICE_ACCOUNT) {
   serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 } else {
-  serviceAccount = require('./serviceAccountKey.json');
+  serviceAccount = require('./beesyrup-35p4c-firebase-adminsdk-fbsvc-17167ae478.json');
 }
 
 if (!getApps().length) {
   initializeApp({
     credential: cert(serviceAccount),
-    databaseURL: "https://beesyrup-674fd-default-rtdb.europe-west1.firebasedatabase.app"
+    databaseURL: "https://beesyrup-35p4c-default-rtdb.europe-west1.firebasedatabase.app"
   });
 }
 
-app.use((req, res, next) => {
-  req.db = getDatabase();
-  next();
-});
 console.log("🔥 Firebase Admin SDK initialized successfully!");
 
-// Server public assets and middleware
+// --- VIEW ENGINE & VIEWS SETUP ---
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// --- GLOBAL MIDDLEWARE & ASSETS ---
 app.use(express.static("public"));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/media', express.static(path.join(__dirname, 'public', 'media')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// --- DATABASE & WEBSITE NAME MIDDLEWARE ---
+app.use(async (req, res, next) => {
+  try {
+    req.db = getDatabase();
+    const snapshot = await req.db.ref('website_name').once('value');
+    res.locals.website_name = snapshot.val() || "Beely";
+    next();
+  } catch (err) {
+    console.error("Failed to fetch website name from database:", err);
+    res.locals.website_name = "Beely";
+    next();
+  }
+});
+
+// --- SITEMAP ROUTE ---
 app.get('/sitemap.xml', async (req, res, next) => {
   try {
     const sitemap = await generateSitemapXML(req.db);
@@ -45,30 +61,14 @@ app.get('/sitemap.xml', async (req, res, next) => {
   }
 });
 
-// --- 1. IMPORT ROUTES ---
-const mainRoutes = require("./routes/pages/main-pages");
-const releaseRoutes = require("./routes/pages/music/release/release");
-const releaseListRoutes = require("./routes/pages/music/releases/releases");
-const trackRoutes = require("./routes/pages/music/track/track");
-const trackListRoutes = require("./routes/pages/music/tracks/tracks");
+// --- IMPORT & MOUNT ROUTES ---
+const mainRoutes = require("./routes/pages/index");
+const musicRoutes = require("./routes/pages/music/index");
 
 app.use("/", mainRoutes);
-app.use("/release", releaseRoutes);
-app.use("/releases", releaseListRoutes);
-app.use("/track", trackRoutes);
-app.use("/tracks", trackListRoutes);
+app.use("/", musicRoutes);
 
-// --- 2. GLOBAL SETTINGS & MIDDLEWARE ---
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-// Serve static assets first
-app.use(express.static("public"));
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// --- 4. ERROR HANDLING MIDDLEWARE ---
+// --- ERROR HANDLING MIDDLEWARE ---
 app.use((err, req, res, next) => {
   console.error("[HTTP 404: Not Found / Does Not Exist]:", err.stack || err.message || err);
   res.status(404).render(path.join(process.cwd(), "views", "utils", "status", "404", "index.ejs"));
@@ -79,10 +79,10 @@ app.use((err, req, res, next) => {
 });
 app.use((err, req, res, next) => {
   console.error("[HTTP 503: Inability To Handle Request]:", err.stack || err.message || err);
-  res.status(503).render(path.join(process.cwd(), "views", "utils", "status", "503", "index.ejs"));
+  res.status(502).render(path.join(process.cwd(), "views", "utils", "status", "502", "index.ejs"));
 });
 
-// --- 5. START SERVER ---
+// --- START SERVER ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}!`);

@@ -10,7 +10,7 @@
             <span class="PillBadge" style="color: var(--branding-accent-primary-HEX)"><%= track.isrc %></span>
             <div class="IconList">
               <% if (track.apple_music_id) { %>
-                <div href="https://music.apple.com/song/<%= track.apple_music_id %>" target="_blank" rel="noopener noreferrer external" class="IconBtn circle-logo box-logo" title="Listen on Apple Music" aria-label="Listen on Apple Music" style="--grad-start: #FA586A; --grad-end: #FA243C;">
+                <div class="IconBtn circle-logo box-logo store-trigger" data-store-name="Apple Music" data-store-url="https://music.apple.com/gb/song/<%= track.apple_music_id %>" data-embed-code='<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/gb/song/<%= track.apple_music_id %>"></iframe>' style="--grad-start: #FA586A; --grad-end: #FA243C;" title="Listen on Apple Music" aria-label="Listen on Apple Music">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" class="Icon" aria-hidden="true">
                     <defs>
                       <mask id="apple_Music_Note_Mask-<%= index %>">
@@ -24,8 +24,8 @@
                   </svg>
                 </div>
               <% } %>
-              <% if (track.bandcamp_id) { %>
-                <div class="IconBtn circle-logo box-logo store-trigger" data-store-name="Bandcamp" data-store-url="https://beesyrup.bandcamp.com/track/<%= track.slug %>" data-embed-code='<iframe style="border: 0; width: 100%; height: 120px;" src="https://bandcamp.com/EmbeddedPlayer/track=<%= track.bandcamp_id %>/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless></iframe>' style="--grad-start: #1DA0C3; --grad-end: #1281A0;" title="Listen on Bandcamp" aria-label="Listen on Bandcamp">
+              <% if (release.bandcamp_id && track.bandcamp_id) { %>
+                <div class="IconBtn circle-logo box-logo store-trigger" data-store-name="Bandcamp" data-store-url="https://beesyrup.bandcamp.com/track/<%= track.slug %>" data-embed-code='<iframe style="border: 0; width: 350px; height: 470px;" src="https://bandcamp.com/EmbeddedPlayer/album=<%= release.bandcamp_id %>/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/track=<%= track.bandcamp_id %>/transparent=true/" seamless><a href="https://beesyrup.bandcamp.com/album/<%= track.slug %>"><%= track.name %> by <%= release.artist %>></a></iframe>' style="--grad-start: #1DA0C3; --grad-end: #1281A0;" title="Listen on Bandcamp" aria-label="Listen on Bandcamp">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" class="Icon" aria-hidden="true">
                     <defs>
                       <mask id="bandcamp_Mask-<%= index %>">
@@ -40,7 +40,7 @@
                 </div>
               <% } %>
               <% if (track.deezer_id) { %>
-                <div class="IconBtn circle-logo box-logo store-trigger" onclick="openStoreModal()" data-store-name="Deezer" data-store-url="https://deezer.com/track/<%= track.slug %>" data-embed-code='<iframe style="border: 0; width: 100%; height: 120px;" src="https://bandcamp.com/EmbeddedPlayer/track=<%= track.bandcamp_id %>/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless></iframe>' style="--grad-start: #A238FF; --grad-end: #A238FF" title="Listen on Deezer" aria-label="Listen on Deezer">
+                <div class="IconBtn circle-logo box-logo store-trigger" onclick="openStoreModal()" data-store-name="Deezer" data-store-url="https://deezer.com/track/<%= track.deezer_id || '' %>" data-embed-code='<iframe title="deezer-widget" src="https://widget.deezer.com/widget/auto/track/<%= track.deezer_id %>" width="400" height="300" frameborder="0" allowtransparency="true" allow="encrypted-media; clipboard-write"></iframe>' style="--grad-start: #A238FF; --grad-end: #A238FF" title="Listen on Deezer" aria-label="Listen on Deezer">
                   <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" class="Icon" aria-hidden="true">
                     <defs>
                       <mask id="deezer-Waveform_Heart_Mask-<%= index %>">
@@ -54,34 +54,23 @@
                   </svg>
                 </div>
               <% } %>
-              <% if (track.soundcloud_id) { %>
-  <div class="IconBtn circle-logo box-logo store-trigger" 
-       data-store-name="SoundCloud" 
-       data-store-url="https://api.soundcloud.com/tracks/<%= track.soundcloud_id %>" 
-       data-embed-code='<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/<%= track.soundcloud_id %>&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>'
-       title="Listen on SoundCloud" 
-       aria-label="Listen on SoundCloud" 
-       style="--grad-start: #FF5500; --grad-end: #FF3300; cursor: pointer;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" class="Icon" aria-hidden="true">
-      <defs>
-        <mask id="soundcloud_Mask-<%= index %>">
-          <!-- Base white circle -->
-          <circle fill="#FFFFFF" cx="256" cy="256" r="256" />
-          
-          <!-- Increased scale and adjusted translation -->
-          <g fill="#000000" class="scaled-path" style="transform: scale(1.05) translate(8px, 60px);" transform-origin="50% 50%">
-            <path d="M384.5 178c-3.1 0-6.1.3-9 .9-6.9-40.3-41.9-70.9-84-70.9-15.3 0-29.5 4.2-41.6 11.5-5.2-34.1-34.5-60.5-69.9-60.5-38.9 0-70.5 31.6-70.5 70.5 0 2.2.2 4.4.5 6.5C79.8 143 51.2 173.9 51.2 211c0 41.1 33.4 74.5 74.5 74.5h258.8c30.9 0 56-25.1 56-56s-25.1-51.5-56-51.5z" />
-          </g>
-        </mask>
-      </defs>
-      
-      <!-- Masked final circle -->
-      <circle fill="#FFFFFF" mask="url(#soundcloud_Mask-<%= index %>)" cx="256" cy="256" r="256" />
-    </svg>
-  </div>
-<% } %>
+              <% if (track.soundcloud_url && track.soundcloud_id) { %>
+                <div class="IconBtn circle-logo box-logo store-trigger" data-store-name="SoundCloud" data-store-url="<%= track.soundcloud_url %>" data-embed-code='<iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay; encrypted-media" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A<%= track.soundcloud_id %>&color=%23f15851&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="<%= track.soundcloud_url %>" title="Bee" target="_blank" style="color: #cccccc; text-decoration: none;">Bee</a> · <a href="<%= release.soundcloud_url %>" title="Fallen Friends" target="_blank" style="color: #cccccc; text-decoration: none;"><%= track.name %></a></div></iframe>' title="Listen on SoundCloud" aria-label="Listen on SoundCloud" style="--grad-start: #FF5500; --grad-end: #FF3300; cursor: pointer;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" class="Icon" aria-hidden="true">
+                    <defs>
+                      <mask id="soundCloud_Cloud_Mask-<%= index %>">
+                        <circle fill="#FFFFFF" cx="256" cy="256" r="256" />
+                        <g fill="#000000" class="scaled-path" style="transform: scale(1.05) translate(8px, 60px);" transform-origin="50% 50%">
+                          <path d="M384.5 178c-3.1 0-6.1.3-9 .9-6.9-40.3-41.9-70.9-84-70.9-15.3 0-29.5 4.2-41.6 11.5-5.2-34.1-34.5-60.5-69.9-60.5-38.9 0-70.5 31.6-70.5 70.5 0 2.2.2 4.4.5 6.5C79.8 143 51.2 173.9 51.2 211c0 41.1 33.4 74.5 74.5 74.5h258.8c30.9 0 56-25.1 56-56s-25.1-51.5-56-51.5z" />
+                        </g>
+                      </mask>
+                    </defs>
+                    <circle fill="#FFFFFF" mask="url(#soundCloud_Cloud_Mask-<%= index %>)" cx="256" cy="256" r="256" />
+                  </svg>
+                </div>
+              <% } %>
               <% if (track.spotify_id) { %>
-                <div href="https://open.spotify.com/track/<%= track.spotify_id %>" target="_blank" rel="noopener noreferrer external" class="IconBtn circle-logo box-logo" title="Listen on Spotify" aria-label="Listen on Spotify" style="--grad-start: #1ED760; --grad-end: #1ED760;">
+                <div class="IconBtn circle-logo box-logo store-trigger" onclick="openStoreModal()" data-store-name="Spotify" data-store-url="https://open.spotify.com/track/<%= track.spotify_id %>" data-embed-code='<iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/<%= track.spotify_id %>?utm_source=generator&si=4df9e6be6f6a402c" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>' style="--grad-start: #1ED760; --grad-end: #1ED760" title="Listen on Spotify" aria-label="Listen on Spotify">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" class="Icon" aria-hidden="true">
                     <defs>
                       <mask id="spotify_Waves-<%= index %>">
@@ -96,7 +85,7 @@
                 </div>
               <% } %>
               <% if (track.tidal_id) { %>
-                <div href="https://tidal.com/browse/track/<%= track.tidal_id %>" target="_blank" rel="noopener noreferrer external" class="IconBtn circle-logo box-logo" title="Listen on TIDAL" aria-label="Listen on TIDAL" style="--grad-start: #000000; --grad-end: #000000;">
+                <div class="IconBtn circle-logo box-logo store-trigger" data-store-name="TIDAL" data-store-url="https://tidal.com/browse/track/<%= track.tidal_id %>" data-embed-code='<iframe src="https://embed.tidal.com/tracks/<%= track.tidal_id %>" width="100%" height="120" allow="encrypted-media; fullscreen; clipboard-write; web-share" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" style="color-scheme: light dark; border: 0;" title="TIDAL Embed Player"></iframe>' style="--grad-start: #000000; --grad-end: #000000" title="Listen on TIDAL" aria-label="Listen on TIDAL">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="Icon" aria-hidden="true">
                     <defs>
                       <mask id="tidal_T_Diamond_Shape-<%= index %>">

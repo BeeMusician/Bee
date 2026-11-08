@@ -26,11 +26,12 @@ const formatReleaseType = (categoryKey) => {
     eps: "EP",
     remixes: "Remix"
   };
-  if (typeMap[categoryKey]) {
-    return typeMap[categoryKey];
+  const key = (categoryKey || "").toLowerCase().trim();
+  if (typeMap[key]) {
+    return typeMap[key];
   }
-  const singular = categoryKey.endsWith("s") ? categoryKey.slice(0, -1) : categoryKey;
-  return singular.charAt(0).toUpperCase() + singular.slice(1);
+  const singular = key.endsWith("s") ? key.slice(0, -1) : key;
+  return singular ? singular.charAt(0).toUpperCase() + singular.slice(1) : "Single";
 };
 
 const formatCategoryTitle = (categoryKey) => {
@@ -40,7 +41,8 @@ const formatCategoryTitle = (categoryKey) => {
     albums: "Albums",
     remixes: "Remixes"
   };
-  return categoryMap[categoryKey] || categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1);
+  const key = (categoryKey || "").toLowerCase().trim();
+  return categoryMap[key] || (key ? key.charAt(0).toUpperCase() + key.slice(1) : "");
 };
 
 const buildSameAsArray = (item = {}) => {
@@ -49,7 +51,6 @@ const buildSameAsArray = (item = {}) => {
     return item.sameAs.filter((url) => typeof url === "string" && url.trim() !== "");
   }
 
-  // Spotify
   if (item.spotify_url) {
     links.push(item.spotify_url);
   } else if (item.spotify_id) {
@@ -58,33 +59,28 @@ const buildSameAsArray = (item = {}) => {
     links.push(`https://open.spotify.com/${type}/${item.spotify_id}`);
   }
 
-  // LANDR / Distribution / UPC
   if (item.landr_url) {
     links.push(item.landr_url);
   } else if (item.upc) {
     links.push(`https://artists.landr.com/${item.upc}`);
   }
 
-  // Apple Music
   if (item.apple_music_url) {
     links.push(item.apple_music_url);
   } else if (item.apple_music_id) {
     links.push(`https://music.apple.com/album/${item.apple_music_id}`);
   }
 
-  // Bandcamp
   if (item.bandcamp_url) {
     links.push(item.bandcamp_url);
   }
 
-  // YouTube / YouTube Music
   if (item.youtube_url) {
     links.push(item.youtube_url);
   } else if (item.youtube_id) {
     links.push(`https://www.youtube.com/watch?v=${item.youtube_id}`);
   }
 
-  // Soundcloud
   if (item.soundcloud_url) {
     links.push(item.soundcloud_url);
   }
@@ -109,14 +105,13 @@ const populateTracks = (r) => {
       const trackObj = typeof trackVal === "object" && trackVal !== null ? trackVal : { duration: trackVal };
       return {
         ...trackObj,
-        slug: trackKey.trim().toLowerCase(),
+        slug: trackObj.slug || trackKey.trim().toLowerCase(),
         name: trackObj.name || trackObj.title || trackKey
       };
     });
   }
   t.sort((a, b) => (a.track_number || 0) - (b.track_number || 0));
   r.tracks = t.map((track) => {
-    // Inherit UPC from parent release for LANDR links if track doesn't specify one
     const trackDataForSameAs = {
       upc: r.upc,
       ...track
@@ -133,18 +128,34 @@ const populateTracks = (r) => {
 };
 
 const fetchReleasesList = async (db) => {
-  if (!db) return [];
+  if (!db) {
+    console.log("🔥 [fetchReleasesList] Error: db instance is missing/null.");
+    return [];
+  }
   try {
     const snapshot = await db.ref("/music/releases").once("value");
     const releasesData = snapshot.val() || {};
+    
+    console.log("🔥 [fetchReleasesList] Raw Firebase Data Categories:", Object.keys(releasesData));
+    
     const releasesList = [];
+
     for (const categoryKey in releasesData) {
       const categoryNode = releasesData[categoryKey];
       if (categoryNode && typeof categoryNode === "object") {
+        console.log(`📁 [fetchReleasesList] Checking category '${categoryKey}', items:`, Object.keys(categoryNode));
+        
         for (const [releaseKey, releaseVal] of Object.entries(categoryNode)) {
           if (releaseVal && typeof releaseVal === "object") {
-            const artist = releaseVal.artist || releaseVal.artists || "Unknown Artist";
-            const title = releaseVal.name || "Unknown Release";
+            const hasValidIndicators = releaseVal.name || releaseVal.title || releaseVal.tracks || releaseVal.release_date;
+            
+            if (!hasValidIndicators) {
+              console.log(`⏭️ [fetchReleasesList] Skipping non-release node '${releaseKey}' inside '${categoryKey}'`);
+              continue;
+            }
+
+            const artist = releaseVal.artist || "BeeSyrup";
+            const title = releaseVal.name || releaseVal.title || "Unknown Release";
             const slug = releaseVal.slug || releaseKey.trim().toLowerCase();
             const rawGenres = releaseVal.genres || [];
             const genres = (Array.isArray(rawGenres) ? rawGenres : Object.values(rawGenres)).filter((g) => g && typeof g === "string" && g.trim() !== "");
@@ -155,8 +166,8 @@ const fetchReleasesList = async (db) => {
             const duration = releaseVal.duration || "";
             const release_duration = formatDuration(duration);
             const modified_date = releaseVal.modified_date || "";
-            const index = 0;
             const sameAs = buildSameAsArray(releaseVal);
+
             const baseRelease = {
               ...releaseVal,
               artist,
@@ -173,26 +184,40 @@ const fetchReleasesList = async (db) => {
               duration,
               release_duration,
               modified_date,
-              index,
+              index: 0,
               sameAs
             };
+
             const populated = populateTracks(baseRelease);
             releasesList.push(populated);
+            console.log(`🎵 [fetchReleasesList] Successfully parsed release: slug='${slug}', title='${title}'`);
           }
         }
       }
     }
+    console.log(`✅ [fetchReleasesList] Total parsed releases: ${releasesList.length}`);
     return releasesList;
   } catch (err) {
-    console.error("Error fetching releases from Firebase:", err);
+    console.error("❌ [fetchReleasesList] Error fetching releases from Firebase:", err);
     return [];
   }
 };
 
 const buildRelease = async (db, targetSlug) => {
   const slug = targetSlug?.trim().toLowerCase();
+  console.log(`🔍 [buildRelease] Searching for target slug: '${slug}'`);
+  
   const releasesList = await fetchReleasesList(db);
+  console.log("📋 [buildRelease] Available slugs in list:", releasesList.map(r => r.slug));
+
   const foundRelease = releasesList.find((r) => r.slug && r.slug.trim().toLowerCase() === slug);
+  
+  if (!foundRelease) {
+    console.log(`⚠️ [buildRelease] No matching release found for slug: '${slug}'`);
+    return { release: null, releasesList };
+  }
+
+  console.log(`🎉 [buildRelease] Found release matching '${slug}':`, foundRelease.title);
   return { release: populateTracks(foundRelease), releasesList };
 };
 
@@ -247,9 +272,9 @@ const generateSitemapXML = async (db) => {
   ];
   let urls = "";
   staticPages.forEach((page) => {
-    urls += `   <url>\n    <loc>${page.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${page.changefreq}</changefreq>\n    <priority>${page.priority}</priority>\n  </url>\n`;
+    urls += `   <url>\n    <loc>${page.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${page.changefreq}</changefreq>\n    <priority>${page.priority}</priority>\n   </url>\n`;
   });
-  urls += `   <url>\n    <loc>https://beesyrupmusic.com/releases</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
+  urls += `   <url>\n    <loc>https://beesyrupmusic.com/releases</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n   </url>\n`;
   releasesList.forEach((release) => {
     if (release.slug) {
       let lastMod = today;
@@ -259,10 +284,10 @@ const generateSitemapXML = async (db) => {
           lastMod = parsed.toISOString().split("T")[0];
         }
       }
-      urls += `   <url>\n    <loc>https://beesyrupmusic.com/release/${release.slug}</loc>\n    <lastmod>${lastMod}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      urls += `   <url>\n    <loc>https://beesyrupmusic.com/release/${release.slug}</loc>\n    <lastmod>${lastMod}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n   </url>\n`;
     }
   });
-  urls += `   <url>\n    <loc>https://beesyrupmusic.com/tracks</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
+  urls += `   <url>\n    <loc>https://beesyrupmusic.com/tracks</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n   </url>\n`;
   tracksList.forEach((track) => {
     if (track.slug) {
       let trackMod = today;
@@ -272,7 +297,7 @@ const generateSitemapXML = async (db) => {
           trackMod = parsed.toISOString().split("T")[0];
         }
       }
-      urls += `   <url>\n    <loc>https://beesyrupmusic.com/track/${track.slug}</loc>\n    <lastmod>${trackMod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+      urls += `   <url>\n    <loc>https://beesyrupmusic.com/track/${track.slug}</loc>\n    <lastmod>${trackMod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n   </url>\n`;
     }
   });
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;

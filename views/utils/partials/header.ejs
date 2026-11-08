@@ -8,7 +8,7 @@
     <div class="header-center">
         <div class="release-wrapper" style="border-radius: 999px;">
             <div class="release-link-container" style="background-color: transparent">
-            <a href="/release/<%= release.slug %>" class="release-item" style="color: var(--branding-accent-secondary-HEX)">
+            <a href="<%= release.artist.toLowerCase() %>/release/<%= release.slug %>" class="release-item" style="color: var(--branding-accent-secondary-HEX)">
                 <div class="release-badge-icon">
                     <img src="<%= release.cover_art %>" alt="Fallen Friends Cover Art" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>

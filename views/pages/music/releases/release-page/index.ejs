@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= release.title %> by <%= release.artist %> (<%= release.type %>) on Beely</title>
+</head>
+<body style="background-color: var(--branding-accent-secondary-HEX); color: var(--branding-accent-primary-HEX); font-family: 'Plus Jakarta Sans', sans-serif">
+  <header class="beely-header">
+    <%- include(header, { tracks: release.tracks, release: release }) %>
+  </header>
+  <main id="release">
+    <article>
+      <%- include(tracklist, { tracks: release.tracks, release: release }) %>
+    </article>
+  </main>
+  <script id="copyReleaseLinkScript">
+    document.getElementById('copyReleaseBtn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const linkToCopy = btn.getAttribute('data-link');
+    const toast = document.getElementById('copyToast');
+    try {
+      await navigator.clipboard.writeText(linkToCopy);
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+    }
+  });
+  </script>
+  <%- include(sidebar, { tracks: release.tracks, release: release }) %>
+  <script src="/js/beeBG.js"></script>
+</body>
+</html>

@@ -3,29 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracks Catalog | BeeSyrup</title>
-    <link rel="stylesheet" href="/style.css">
+    <title><%= artistSlug.toUpperCase() %> - Tracks</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            margin: 0;
+            padding: 2rem;
+        }
+        .tracks-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .track-card {
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .text-muted { color: #9ca3af; }
+        .btn-link {
+            color: #818cf8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .btn-link:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <main>
-        <h1>All Tracks</h1>
-        
-        <% if (tracks && tracks.length > 0) { %>
-            <ul>
-                <% tracks.forEach(track => { %>
-                    <li>
-                        <a href="/track/<%= track.slug %>">
-                            <span><%= track.name %></span>
-                            <% if (track.duration) { %>
-                                <span><%= track.duration %></span>
+    <div class="tracks-container">
+        <!-- ================= TRACKS LIST HEADER ================= -->
+        <header style="margin-bottom: 2rem;">
+            <h1 style="font-size: 2.25rem; font-weight: bold; margin-bottom: 0.5rem;"><%= artistSlug.toUpperCase() %> Tracks</h1>
+            <p class="text-muted">Explore all individual tracks and sound design pieces released by this artist.</p>
+        </header>
+
+        <!-- ================= TRACKS LOOP ================= -->
+        <% if (typeof tracks !== 'undefined' && tracks.length > 0) { %>
+            <div>
+                <% tracks.forEach((track, index) => { %>
+                    <div class="track-card">
+                        <div>
+                            <h2 style="font-size: 1.125rem; font-weight: 600; margin: 0 0 0.25rem 0;">
+                                <a href="/<%= artistSlug %>/track/<%= track.slug %>" class="btn-link"><%= track.name || track.title %></a>
+                            </h2>
+                            <p class="text-muted" style="font-size: 0.875rem; margin: 0;">
+                                From release: 
+                                <% if (track.release && track.release.slug) { %>
+                                    <a href="/<%= artistSlug %>/release/<%= track.release.slug %>" class="text-muted" style="text-decoration: underline;">
+                                        <%= track.release.title %>
+                                    </a>
+                                <% } else { %>
+                                    Unknown Release
+                                <% } %>
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <% if (track.formattedDuration) { %>
+                                <span class="text-muted" style="font-size: 0.875rem; display: block; margin-bottom: 0.25rem;"><%= track.formattedDuration %></span>
                             <% } %>
-                        </a>
-                    </li>
+                            <a href="/<%= artistSlug %>/track/<%= track.slug %>" class="btn-link" style="font-size: 0.875rem;">Play / Details &rarr;</a>
+                        </div>
+                    </div>
                 <% }) %>
-            </ul>
+            </div>
         <% } else { %>
-            <p>No tracks available at the moment.</p>
+            <!-- ================= EMPTY STATE ================= -->
+            <div style="text-align: center; padding: 5rem 0;">
+                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">No Tracks Found</h2>
+                <p class="text-muted" style="margin-bottom: 1.5rem;">This artist hasn't published any standalone tracks yet.</p>
+                <a href="/<%= artistSlug %>" class="btn-link">&larr; Back to Artist Profile</a>
+            </div>
         <% } %>
-    </main>
+    </div>
 </body>
 </html>

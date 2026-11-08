@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap">
+    <link rel="preconnect" href="https://open.spotify.com" crossorigin />
+    <link rel="dns-prefetch" href="https://open.spotify.com" />
+    <link rel="dns-prefetch" href="https://i.scdn.co" />
+    <link rel="preconnect" href="https://bandcamp.com" crossorigin />
+    <link rel="dns-prefetch" href="https://bandcamp.com" />
+    <link rel="dns-prefetch" href="https://f4.bcbits.com" />
+    <link rel="preconnect" href="https://embed.tidal.com" crossorigin />
+    <link rel="dns-prefetch" href="https://embed.tidal.com" />
+    <link rel="dns-prefetch" href="https://resources.tidal.com" />
+    <link rel="preconnect" href="https://widget.deezer.com" crossorigin />
+    <link rel="dns-prefetch" href="https://widget.deezer.com" />
+    <link rel="dns-prefetch" href="https://e-cdns-images.dzcdn.net" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://music.beely.com/artist/@<%= release.artist.toLowerCase() %>">
+    <title><%= release.artist %> | Artist on Beely</title>
+    <meta name="description" content="Listen to/Stream <%= release.name %> (<%= release.type %>) by <%= release.artist %> now on streaming stores. Release Information: <%= release.track_count %> <%= release.track_count === 1 ? 'track' : 'tracks' %>: <%= release.track_list %>. Artist: <%= release.artist %>, Release Date: <%= release.date %>, Type: <%= release.type %>, Genres: <%= release.genres.filter(Boolean).join(", ") %>">
+    <link rel="apple-touch-icon" href="https://beesyrupmusic.com/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" type="image/svg+xml" href="https://beesyrupmusic.com/favicon.svg">
+    <link rel="icon" type="image/png" href="https://beesyrupmusic.com/favicon.png" sizes="512x512">
+    <link rel="icon" type="image/x-icon" href="https://beesyrupmusic.com/favicon.ico">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="/style.css">
+    <meta name="theme-color" content="#FAFF00">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="<%= release.artist %>">
+
+    <meta property="og:site_name" content="<%= release.artist %>">
+    <meta property="og:type" content="music.album">
+    <meta property="og:title" content="<%= release.name %> by <%= release.artist %> (<%= release.type %>)">
+    <meta property="og:description" content="Listen to/Stream <%= release.name %> (<%= release.type %>) by <%= release.artist %> now on streaming stores. Release Information: <%= release.track_count %> <%= release.track_count === 1 ? 'track' : 'tracks' %>: <%= release.track_list %>. Artist: <%= release.artist %>, Release Date: <%= release.date %>, Type: <%= release.type %>, Genres: <%= release.genres.filter(Boolean).join(", ") %>">
+    <meta property="og:url" content="https://beesyrupmusic.com/release/<%= release.slug %>">
+    <meta property="og:image" content="<%= release.cover_art %>">
+    <meta property="og:image:width" content="2000">
+    <meta property="og:image:height" content="2000">
+    <meta property="og:image:alt" content="<%= release.artist %> Logo">
+
+    <meta name="twitter:title" content="<%= release.name %> by <%= release.artist %> (<%= release.type %>)">
+    <meta name="twitter:description" content="Listen to/Stream <%= release.name %> (<%= release.type %>) by <%= release.artist %> now on streaming stores. Release Information: <%= release.track_count %> <%= release.track_count === 1 ? 'track' : 'tracks' %>: <%= release.track_list %>. Artist: <%= release.artist %>, Release Date: <%= release.date %>, Type: <%= release.type %>, Genres: <%= release.genres.filter(Boolean).join(", ") %>">
+    <meta name="twitter:url" content="https://beesyrupmusic.com/release/<%= release.slug %>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="<%= release.cover_art %>">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => { console.log('Service Worker active:', registration.scope); })
+            .catch((error) => { console.error('Service Worker registration failed:', error); });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <header class="website-header">
+      <%- include(header, { tracks: release.tracks, release: release }) %>
+    </header>
+    <main id="main-content">
+      <picture>
+        <source media="(max-width: 900px)" srcset="<%= release.cover_art %>">
+        <img id="coverart" src="<%= release.cover_art %>" width="2000" height="2000" alt="<%= release.name %> Cover Art">
+      </picture>
+      <section id="tracklist" style="width: 100%; max-width: 100%; margin: 0 auto; padding: 35px 15px; box-sizing: border-box;">
+        <% if (typeof release.tracks !== 'undefined' && release.tracks.length > 0) { %>
+          <%- include(tracklist, { tracks: release.tracks, release: release }) %>
+        <% } else { %>
+          <div class="CardPrimary" style="width: 100%; padding: 20px;">
+            <p style="color: #666; margin: 0; text-align: center;">No tracks available for this release.</p>
+          </div>
+        <% } %>
+      </section>
+      <script>
+        function copyTrackUrl(button) {
+          const slug = button.getAttribute('data-slug');
+          const trackUrl = `${window.location.origin}/track/${slug}`;
+          navigator.clipboard.writeText(trackUrl).then(function() {
+          const originalHTML = button.innerHTML;
+          button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+          setTimeout(function() {
+            button.innerHTML = originalHTML;
+          }, 1500);
+          }).catch(function(err) {
+            console.error('Could not copy text: ', err);
+          });
+        }
+      </script>
+      <section class="Grid">
+        <div class="Card">
+          <h2>Release Information</h2>
+          <dl>
+            <dt>Artist</dt>
+            <dd><%= release.artist %></dd>
+
+            <dt>Release Date</dt>
+            <dd><%= release.date %></dd>
+
+            <dt>Genre</dt>
+            <dd><%= release.genres %></dd>
+
+            <dt>Label</dt>
+            <dd>BeeSyrup</dd>
+          </dl>
+        </div>
+
+        <div class="Card">
+          <h2>Credits</h2>
+          <dl>
+            <dt>Written By</dt>
+            <dd>Harry Halstead</dd>
+
+            <dt>Produced By</dt>
+            <dd>BeeSyrup</dd>
+
+            <dt>Artwork</dt>
+            <dd>BeeSyrup</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="card VideoSection">
+        <div>
+          <h2>Music Video</h2>
+          <h3><%= release.name %> (Official Visualizer)</h3>
+          <a class="Watch-btn" href="#tracklist">Watch on YouTube</a>
+        </div>
+
+        <form id="rating-form" action="/api/rate" method="POST">
+          <input type="hidden" name="release_slug" value="<%= release.slug %>">
+          <label>Rate this release:</label>
+          <div class="stars">
+            <input type="radio" name="rating" value="1" id="star1">
+            <input type="radio" name="rating" value="2" id="star2">
+            <input type="radio" name="rating" value="3" id="star3">
+            <input type="radio" name="rating" value="4" id="star4">
+            <input type="radio" name="rating" value="5" id="star5" checked>
+          </div>
+          <button type="submit">Submit Rating</button>
+        </form>
+      </section>
+    </main>
+    <%- include(storemodule, { tracks: release.tracks, release: release }) %>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Listen for clicks on any store trigger button
+      document.addEventListener('click', (event) => {
+        const trigger = event.target.closest('.store-trigger');
+        if (!trigger) return;
+
+        const storeName = trigger.dataset.storeName;
+        const directUrl = trigger.dataset.storeUrl;
+        const embedCode = trigger.dataset.embedCode || '';
+
+        openStoreModule(storeName, directUrl, embedCode);
+      });
+
+      document.getElementById('toggleEmbedBtn')?.addEventListener('click', () => {
+        const embedSection = document.getElementById('embedSection');
+        embedSection.hidden = !embedSection.hidden;
+      });
+
+      document.getElementById('copyEmbedBtn')?.addEventListener('click', () => {
+        const embedText = document.getElementById('embedText');
+        embedText.select();
+        navigator.clipboard.writeText(embedText.value);
+      });
+    });
+
+    function openStoreModule(storeName, directUrl, embedCode = '') {
+      const modal = document.getElementById('storeModal');
+      const title = document.getElementById('modalTitle');
+      const link = document.getElementById('storeDirectLink');
+      const embedWrapper = document.getElementById('embedWrapper');
+      const embedSection = document.getElementById('embedSection');
+      const embedText = document.getElementById('embedText');
+
+      title.textContent = `${storeName} Options`;
+      link.href = directUrl;
+      
+      if (embedCode) {
+        embedWrapper.style.display = 'block';
+        embedText.value = embedCode;
+        embedWrapper.innerHTML = embedCode; // Actually render the iframe/embed markup
+        embedSection.hidden = true;
+      } else {
+        embedWrapper.style.display = 'none';
+      }
+      
+      modal.showModal();
+    }
+    </script>
+  </body>
+</html>
