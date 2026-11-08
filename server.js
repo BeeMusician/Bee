@@ -9,8 +9,8 @@ const { getDatabase } = require('firebase-admin/database');
 const { generateSitemapXML } = require('./utils/releases/releases.js');
 let serviceAccount;
 
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+if (process.env.FIREBASE_ADMIN_SDK) {
+  serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_SDK);
 } else {
   serviceAccount = require('./beesyrup-35p4c-firebase-adminsdk-fbsvc-17167ae478.json');
 }
