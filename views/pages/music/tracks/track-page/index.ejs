@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://music.beely.co/<%= release.artist.toLowerCase() %>/release/<%= release.slug %>">
     <title><%= track.name %> by <%= release.artist %></title>
-    <meta name="description" content="Listen to/Stream <%= release.name %> (<%= release.type %>) by <%= release.artist %> now on streaming stores. Release Information: <%= release.track_count %> <%= release.track_count === 1 ? 'track' : 'tracks' %>: <%= release.track_list %>. Artist: <%= release.artist %>, Release Date: <%= release.date %>, Type: <%= release.type %>, Genres: <%= release.genres.filter(Boolean).join(", ") %>">
+    <meta name="description" content="Listen to/Stream <%= track.name %> by <%= release.artist %> now on streaming stores. Release Information: <%= release.track_count %> <%= release.track_count === 1 ? 'track' : 'tracks' %>: <%= release.track_list %>. Artist: <%= release.artist %>, Release Date: <%= release.date %>, Type: <%= release.type %>, Genres: <%= release.genres.filter(Boolean).join(", ") %>">
     <link rel="apple-touch-icon" href="https://beesyrupmusic.com/apple-touch-icon.png" sizes="180x180">
     <link rel="icon" type="image/svg+xml" href="https://beesyrupmusic.com/favicon.svg">
     <link rel="icon" type="image/png" href="https://beesyrupmusic.com/favicon.png" sizes="512x512">

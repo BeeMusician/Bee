@@ -57,6 +57,7 @@
 header {
   background: var(--branding-accent-primary-HEX);
   position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -275,7 +276,7 @@ header {
         background-color: var(--branding-accent-secondary-HEX);
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
         gap: 8px;
         flex-wrap: nowrap;
         .icon-button {

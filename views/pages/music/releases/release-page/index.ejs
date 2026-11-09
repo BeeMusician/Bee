@@ -13,6 +13,11 @@
   <header>
     <%- include(header, { tracks: release.tracks, release: release }) %>
   </header>
+  <main>
+    <article>
+      <%- include(tracklist, { tracks: release.tracks, release: release }) %>
+    </article>
+  </main>
   <%- include(sidebar, { tracks: release.tracks, release: release }) %>
   <%- include(storemodule, { tracks: release.tracks, release: release }) %>
   <script src="/js/beeBG.js"></script>
