@@ -12,7 +12,7 @@ let serviceAccount;
 if (process.env.FIREBASE_ADMIN_SDK) {
   serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_SDK);
 } else {
-  serviceAccount = require('./beesyrup-35p4c-firebase-adminsdk-fbsvc-17167ae478.json');
+  serviceAccount = require('./beesyrup-35p4c-firebase-adminsdk-fbsvc-9f48be3775.json');
 }
 
 if (!getApps().length) {

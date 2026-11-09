@@ -13,26 +13,8 @@
   <header>
     <%- include(header, { tracks: release.tracks, release: release }) %>
   </header>
-  <main id="release">
-    <article>
-      <%- include(tracklist, { tracks: release.tracks, release: release }) %>
-    </article>
-  </main>
-  <script id="copyReleaseLinkScript">
-    document.getElementById('copyReleaseBtn')?.addEventListener('click', async (e) => {
-    const btn = e.currentTarget;
-    const linkToCopy = btn.getAttribute('data-link');
-    const toast = document.getElementById('copyToast');
-    try {
-      await navigator.clipboard.writeText(linkToCopy);
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
-    } catch (err) {
-      console.error('Failed to copy link:', err);
-    }
-  });
-  </script>
   <%- include(sidebar, { tracks: release.tracks, release: release }) %>
+  <%- include(storemodule, { tracks: release.tracks, release: release }) %>
   <script src="/js/beeBG.js"></script>
 </body>
 </html>

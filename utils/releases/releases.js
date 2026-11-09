@@ -94,9 +94,11 @@ const populateTracks = (r) => {
   }
   const rawTracks = r.tracks || r.track_list || [];
   let t = [];
+  
   if (Array.isArray(rawTracks)) {
     t = rawTracks.map((track) => ({
       slug: track.slug || (track.name || track.title || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+      spotify_id: track.spotify_id || r.spotify_id, // ✅ Fallback to release spotify_id if track lacks one
       ...track
     }));
   } else if (typeof rawTracks === "object" && rawTracks !== null) {
@@ -105,11 +107,14 @@ const populateTracks = (r) => {
       return {
         ...trackObj,
         slug: trackObj.slug || trackKey.trim().toLowerCase(),
-        name: trackObj.name || trackObj.title || trackKey
+        name: trackObj.name || trackObj.title || trackKey,
+        spotify_id: trackObj.spotify_id || r.spotify_id // ✅ Explicitly grabs track-level spotify_id or falls back to release
       };
     });
   }
+
   t.sort((a, b) => (a.track_number || 0) - (b.track_number || 0));
+  
   r.tracks = t.map((track) => {
     const trackDataForSameAs = {
       upc: r.upc,
@@ -121,6 +126,7 @@ const populateTracks = (r) => {
       sameAs: buildSameAsArray(trackDataForSameAs)
     };
   });
+
   r.track_count = r.tracks.length;
   r.track_list = r.tracks.length ? r.tracks.slice(0, 2).map((x) => `${x.name} (${x.formattedDuration})`).join(" • ") + (r.tracks.length > 2 ? "..." : "") : "";
   return r;
@@ -134,6 +140,7 @@ const fetchReleasesList = async (db) => {
     const snapshot = await db.ref("/music/releases").once("value");
     const releasesData = snapshot.val() || {};
     const releasesList = [];
+    let globalIndex = 0;
     for (const categoryKey in releasesData) {
       const categoryNode = releasesData[categoryKey];
       if (categoryNode && typeof categoryNode === "object") {
@@ -156,7 +163,7 @@ const fetchReleasesList = async (db) => {
             const release_duration = formatDuration(duration);
             const modified_date = releaseVal.modified_date || "";
             const sameAs = buildSameAsArray(releaseVal);
-
+            const index = globalIndex++;
             const baseRelease = {
               ...releaseVal,
               artist,
@@ -173,7 +180,7 @@ const fetchReleasesList = async (db) => {
               duration,
               release_duration,
               modified_date,
-              index: 0,
+              index,
               sameAs
             };
             const populated = populateTracks(baseRelease);

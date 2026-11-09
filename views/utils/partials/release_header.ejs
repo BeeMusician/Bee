@@ -1,10 +1,10 @@
 <div class="header-wrapper">
   <div class="header-left">
     <button class="hamburger-btn" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMenu()">
-      <svg viewBox="0 0 64 64" fill="currentColor" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="15" y1="15" x2="49" y2="15"></line>
-        <line x1="15" y1="30" x2="49" y2="30"></line>
-        <line x1="15" y1="45" x2="49" y2="45"></line>
+      <svg viewBox="0 0 76 76" fill="currentColor" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="19" y1="22" x2="57" y2="22" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+        <line x1="19" y1="38" x2="57" y2="38" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+        <line x1="19" y1="54" x2="57" y2="54" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
       </svg>
     </button>
     <a href="/" class="brand" aria-label="Home">
@@ -17,7 +17,7 @@
   <div class="header-center">
     <div class="release-wrapper">
       <div class="cover-art">
-        <img src="<%= release.cover_art %>" alt="Release Cover" />
+        <img src="<%= release.cover_art %>" alt="<%= release.name %> release cover art"/>
       </div>
       <div class="release-badge-text">
         <time class="release-date" datetime="<%= release.release_date %>"><%= release.date %></time>
@@ -30,18 +30,29 @@
       </div>
     </div>
     <div class="search-container">
-      <input type="search" placeholder="Search catalog..." aria-label="Search catalog" class="header-search-input" />
+      <input type="search" placeholder="Search catalog..." aria-label="Search catalog" class="header-search-input" name="Search" id="search" tabindex="1" />
     </div>
   </div>
   <div class="header-right">
-    <nav class="header-nav" aria-label="Main Navigation">
-      <a href="/catalog" class="nav-link">Catalog</a>
-      <a href="/about" class="nav-link">About</a>
-      <a href="/contact" class="nav-link">Contact</a>
-    </nav>
+    <div class="icon-list">
+      <% if (release.spotify_id) { %>
+        <div class="icon-button circle-logo" onclick="openStoreModal(this)" data-store-name="Spotify" data-store-url="https://open.spotify.com/album/<%= release.spotify_id %>" data-embed-code='<iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/album/<%= release.spotify_id %>?utm_source=generator&si=4df9e6be6f6a402c" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>' style="--grad-start: var(--spotify); --grad-end: var(--spotify)" title="Listen on Spotify" aria-label="Listen on Spotify">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" class="Icon" aria-hidden="true">
+            <defs>
+              <mask id="spotify_Waves-<%= release.index %>">
+                <circle fill="#FFFFFF" cx="500" cy="500" r="500" />
+                <g fill="#000000" stroke="#000000" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M730.005 762.5c-10 15-30 19.999-45 10-117.498-72.5-265-87.5-440-47.5-17.5 5-35-6.25-40-23.75-5-17.5 6.25-35 23.75-40 190-42.5 352.5-25 485 57.5 15 10 19.999 30 10.25 43.75zm60-160c-12.5 17.5-35 25-52.5 12.5-135-82.5-342.5-107.5-502.5-58.75-20 6.25-41.25-5-47.5-25-6.25-20 5-41.25 25-47.5 182.5-55 415-27.5 570 67.5 17.5 12.5 25 35 12.5 51.25zm5-167.5C631.25 341.25 366.25 333.75 212.5 378.75c-25 7.5-51.25-6.25-58.75-31.25-7.5-25 6.25-51.25 31.25-58.75 175-52.5 478.75-43.75 651.25 58.75 22.5 13.75 30 43.75 16.25 66.25-13.75 22.5-43.75 30-66.25 16.25z" />
+                </g>
+              </mask>
+            </defs>
+            <circle fill="#FFFFFF" mask="url(#spotify_Waves-<%= release.index %>)" cx="500" cy="500" r="500" />
+          </svg>
+        </div>
+        <% } %>
+    </div>
   </div>
 </div>
-
 <script>
   function toggleMenu() {
     const dialog = document.getElementById('sidebarDialog');
@@ -58,3 +69,43 @@
     document.getElementById('menuToggle')?.setAttribute('aria-expanded', 'false');
   });
 </script>
+<script>
+  function openStoreModal(button) {
+    const dialog = document.getElementById('storeModal');
+    if (button && dialog) {
+      const storeName = button.getAttribute('data-store-name');
+      const storeUrl = button.getAttribute('data-store-url');
+      const embedCode = button.getAttribute('data-embed-code');
+      const titleEl = document.getElementById('title');
+      if (titleEl) {
+        titleEl.textContent = storeName ? `Listen on ${storeName}` : 'Options';
+      }
+      const directLink = document.getElementById('storeDirectLink');
+      if (directLink && storeUrl) {
+        directLink.href = storeUrl;
+        directLink.textContent = `Open in ${storeName || 'App'}`;
+      }
+      const embedWrapper = document.getElementById('embedWrapper');
+      if (embedWrapper && embedCode) {
+        embedWrapper.innerHTML = embedCode;
+      }
+    }
+    if (dialog && !dialog.open) {
+      dialog.showModal();
+    }
+  }
+</script>
+<script id="copyReleaseLinkScript">
+    document.getElementById('copyReleaseBtn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const linkToCopy = btn.getAttribute('data-link');
+    const toast = document.getElementById('copyToast');
+    try {
+      await navigator.clipboard.writeText(linkToCopy);
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+    }
+  });
+  </script>
