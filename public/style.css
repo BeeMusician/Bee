@@ -12,7 +12,7 @@
   --bandcamp: #1DA0C3;
   --deezer: #A238FF;
   --spotify: #1ED760;
-  --tidal: #ffffff;
+  --tidal: #000000;
   --soundcloud: #FF5500;
   --youtube: #FF0000;
 }
@@ -85,10 +85,10 @@ header {
     padding-bottom: 0;
     gap: 0 16px; /* Space between each section */
     .header-left {
+      width: auto;
       height: auto;
       display: flex;
       flex-shrink: 0;
-      width: auto;
       align-items: center;
       justify-content: flex-start;
       .hamburger-btn {
@@ -137,15 +137,15 @@ header {
       }
     }
     .header-center {
+      width: auto;
+      height: auto;
       gap: 20px; /* Space Between "Current Release" UI and Search Bar */
       padding: 0 48px; /* Space Between header-left and header-right */
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 0;
       overflow: hidden;
-      width: 100%;
       .release-wrapper {
         user-select: none;
         flex-shrink: 0;

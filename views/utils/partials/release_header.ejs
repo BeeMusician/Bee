@@ -36,7 +36,7 @@
   <div class="header-right">
     <div class="icon-list">
       <% if (release.deezer_id) { %>
-        <div class="icon-button circle-logo" onclick="openStoreModal(this)" data-store-name="Deezer" data-store-url="https://deezer.com/album/<%= release.deezer_id %>" data-embed-code='<iframe title="deezer-widget" src="https://widget.deezer.com/widget/auto/album/<%= release.deezer_id %>" width="400" height="300" frameborder="0" allowtransparency="true" allow="encrypted-media; clipboard-write"></iframe>' style="--grad-start: #A238FF; --grad-end: #A238FF" title="Listen on Deezer" aria-label="Listen on Deezer">
+        <div class="icon-button circle-logo" onclick="openStoreModal(this)" data-store-name="Deezer" data-store-url="https://deezer.com/album/<%= release.deezer_id %>" data-embed-code='<iframe title="deezer-widget" src="https://widget.deezer.com/widget/auto/album/<%= release.deezer_id %>" width="400" height="300" frameborder="0" allowtransparency="true" allow="encrypted-media; clipboard-write"></iframe>' style="--grad-start: var(--deezer); --grad-end: var(--deezer)" title="Listen on Deezer" aria-label="Listen on Deezer">
           <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" class="Icon" aria-hidden="true">
             <defs>
               <mask id="deezer-Waveform_Heart_Mask-<%= release.index %>">
@@ -64,6 +64,24 @@
             <circle fill="#FFFFFF" mask="url(#spotify_Waves-<%= release.index %>)" cx="500" cy="500" r="500" />
           </svg>
         </div>
+        <% } %>
+        <% if (release.tidal_id) { %>
+          <div class="icon-button circle-logo" data-store-name="TIDAL" data-store-url="https://tidal.com/browse/album/<%= release.tidal_id %>" data-embed-code='<iframe src="https://embed.tidal.com/album/<%= release.tidal_id %>" width="100%" height="120" allow="encrypted-media; fullscreen; clipboard-write; web-share" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" style="color-scheme: light dark; border: 0;" title="TIDAL Embed Player"></iframe>' style="--grad-start: var(--tidal); --grad-end: var(--tidal)" title="Listen on TIDAL" aria-label="Listen on TIDAL">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="Icon" aria-hidden="true">
+              <defs>
+                <mask id="tidal_T_Diamond_Shape-<%= release.index %>">
+                  <circle fill="#FFFFFF" cx="256" cy="256" r="256" />
+                  <g fill="#000000">
+                    <polygon points="126.86,131.14 196.86,201.14 126.86,271.14 56.86,201.14" />
+                    <polygon points="256,131.14 326,201.14 256,271.14 186,201.14" />
+                    <polygon points="385.14,131.14 455.14,201.14 385.14,271.14 315.14,201.14" />
+                    <polygon points="256,260.28 326,330.28 256,400.28 186,330.28" />
+                  </g>
+                </mask>
+              </defs>
+              <circle fill="#FFFFFF" mask="url(#tidal_T_Diamond_Shape-<%= release.index %>)" cx="256" cy="256" r="256" />
+            </svg>
+          </div>
         <% } %>
     </div>
   </div>

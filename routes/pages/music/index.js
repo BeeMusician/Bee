@@ -14,11 +14,41 @@ router.get('/release/:slug', async (req, res, next) => {
   try {
     const targetSlug = req.params.slug;
     const { release, releasesList } = await buildRelease(req.db, targetSlug);
-    const track = await buildTrack(req.db, targetSlug);
+    
     if (!release) {
       return next(new Error("Release not found"));
     }
+
+    const track = (release.tracks && release.tracks.length > 0) ? release.tracks[0] : {};
+
     res.render('pages/music/releases/release-page/index', {
+      release,
+      releasesList,
+      track,
+      tracks: release.tracks,
+      header: releaseheader,
+      storemodule: streamingmodule,
+      tracklist: Tracklist,
+      sidebar: Sidebar
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/* =======================================
+   INDIVIDUAL TRACK PAGE (/track/:slug)
+   ======================================= */
+router.get('/track/:slug', async (req, res, next) => {
+  try {
+    const targetSlug = req.params.slug;
+    const { track, release, releasesList } = await buildTrack(req.db, targetSlug);
+    
+    if (!track || !release) {
+      return next(new Error("Track not found"));
+    }
+
+    res.render('pages/music/tracks/track-page/index', {
       release,
       releasesList,
       track,
