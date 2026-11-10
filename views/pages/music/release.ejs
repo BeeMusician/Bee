@@ -15,7 +15,15 @@
   </header>
   <main>
     <article>
-      <%- include(tracklist, { tracks: release.tracks, release: release }) %>
+      <picture>
+        <source media="(max-width: 900px)" srcset="<%= release.cover_art %>">
+        <img id="coverart" src="<%= release.cover_art %>" width="100" height="100" alt="<%= release.name %> Cover Art">
+      </picture>
+      <% if (typeof release.tracks !== 'undefined' && release.tracks.length > 0) { %>
+        <%- include(tracklist, { tracks: release.tracks, release: release }) %>
+      <% } else { %>
+        <p>No tracks available for this release.</p>
+      <% } %>
     </article>
   </main>
   <%- include(sidebar, { tracks: release.tracks, release: release }) %>

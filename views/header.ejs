@@ -15,7 +15,7 @@
     </a>
   </div>
   <div class="header-center">
-    <div class="release-wrapper">
+    <a href="/release/<%= release.slug %>" class="release-wrapper">
       <div class="cover-art">
         <img src="<%= release.cover_art %>" alt="<%= release.name %> release cover art"/>
       </div>
@@ -23,18 +23,33 @@
         <time class="release-date" datetime="<%= release.release_date %>"><%= release.date %></time>
         <div class="subtitle-row">
           <span class="pulse-dot"></span>
-          <span>Newest Release (<%= release.type.toUpperCase() %>)</span>
+          <span>Newest Release</span>
           <span class="release-tag">New</span>
         </div>
-        <span class="release-title-text"><%= release.name %></span>
+        <span class="release-title-text"><%= release.name %> (<%= release.type.toUpperCase() %>)</span>
       </div>
-    </div>
+    </a>
     <div class="search-container">
       <input type="search" placeholder="Search catalog..." aria-label="Search catalog" class="header-search-input" name="Search" id="search" tabindex="1" />
     </div>
   </div>
   <div class="header-right">
     <div class="icon-list">
+      <% if (release.bandcamp_id) { %>
+        <div class="icon-button circle-logo" data-store-name="Bandcamp" data-store-url="https://beesyrup.bandcamp.com/album/<%= release.slug %>" data-embed-code='<iframe style="border: 0; width: 350px; height: 470px;" src="https://bandcamp.com/EmbeddedPlayer/album=<%= release.bandcamp_id %>/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/transparent=true/" seamless><a href="https://beemusician.bandcamp.com/album/tails-trilogy"><%= release.name %> by <%= release.artist %></a></iframe>' style="--grad-start: #1DA0C3; --grad-end: #1281A0;" title="Listen on Bandcamp" aria-label="Listen on Bandcamp">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" class="Icon" aria-hidden="true">
+            <defs>
+              <mask id="bandcamp_Mask-<%= release.index %>">
+                <circle fill="#FFFFFF" cx="256" cy="256" r="256" />
+                <g fill="#000000" class="scaled-path">
+                  <path d="M23 396l138-280h330L353 396H23z" />
+                </g>
+              </mask>
+            </defs>
+          <circle fill="#FFFFFF" mask="url(#bandcamp_Mask-<%= release.index %>)" cx="256" cy="256" r="256" />
+          </svg>
+        </div>
+      <% } %>
       <% if (release.deezer_id) { %>
         <div class="icon-button circle-logo" onclick="openStoreModal(this)" data-store-name="Deezer" data-store-url="https://deezer.com/album/<%= release.deezer_id %>" data-embed-code='<iframe title="deezer-widget" src="https://widget.deezer.com/widget/auto/album/<%= release.deezer_id %>" width="400" height="300" frameborder="0" allowtransparency="true" allow="encrypted-media; clipboard-write"></iframe>' style="--grad-start: var(--deezer); --grad-end: var(--deezer)" title="Listen on Deezer" aria-label="Listen on Deezer">
           <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" class="Icon" aria-hidden="true">
@@ -141,4 +156,4 @@
       console.error('Failed to copy link:', err);
     }
   });
-  </script>
+</script>

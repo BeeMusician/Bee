@@ -1,12 +1,12 @@
 const express = require("express");
 const path = require("path");
 const router = express.Router({ strict: true });
-const { buildFeaturedRelease, fetchTracksList } = require(path.join(process.cwd(), "utils", "releases", "releases.js"));
-const { notifyIndexNow } = require(path.join(process.cwd(), "utils", "indexNow"));
+const { buildFeaturedRelease, fetchTracksList } = require(path.join(process.cwd(), "routes", "firebase", "music-database.js"));
+const { notifyIndexNow } = require(path.join(process.cwd(), "routes", "index-now.js"));
 const ADMIN_SECRET = process.env.ADMIN_SECRET || "2Agcd/)e7hI9g[P8Ja8r9rl0Cw/ypkNQ";
 const DOMAIN = "beesyrupmusic.com";
-const Tracklist = path.join(process.cwd(), "views", "utils", "partials", "tracklist.ejs");
-const Header = path.join(process.cwd(), "views", "utils", "partials", "header.ejs");
+const Tracklist = path.join(process.cwd(), "views", "tracklist.ejs");
+const Header = path.join(process.cwd(), "views", "header.ejs");
 
 /* =======================================
    HOME PAGE ROUTE
@@ -15,7 +15,7 @@ router.get("/", async (req, res, next) => {
   try {
     const { release: featuredRelease, releasesList } = await buildFeaturedRelease(req.db);
     const tracksList = await fetchTracksList(req.db);
-    return res.render("pages/index", {
+    return res.render("pages/home-root.ejs", {
       release: featuredRelease,
       featuredRelease: featuredRelease,
       releases: releasesList,
@@ -35,7 +35,7 @@ router.get("/epk", async (req, res, next) => {
   try {
     const { release: featuredRelease, releasesList } = await buildFeaturedRelease(req.db);
     const tracksList = await fetchTracksList(req.db);
-    return res.render("pages/epk/index", {
+    return res.render("pages/epk.ejs", {
       release: featuredRelease,
       featuredRelease: featuredRelease,
       releases: releasesList,
@@ -55,7 +55,7 @@ router.get("/about", async (req, res, next) => {
   try {
     const { release: featuredRelease, releasesList } = await buildFeaturedRelease(req.db);
     const tracksList = await fetchTracksList(req.db);
-    return res.render("pages/about/index", {
+    return res.render("pages/about.ejs", {
       release: featuredRelease,
       featuredRelease: featuredRelease,
       releases: releasesList,
